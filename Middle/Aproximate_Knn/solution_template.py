@@ -97,20 +97,21 @@ def nsw(query_point: int, all_documents: np.ndarray,
         search_results[current_point] = dist_f(query_point, all_documents[current_point])
         search_neighbors(current_point, visited, priority_queue)
 
-    return np.array(list(search_results.items()), dtype=object)[:search_k, 0]
+    sorted_l = sorted(search_results.items(), key=lambda x: x[1])
+    return np.array(sorted_l, dtype=object)[:search_k, 0]
 
-print('1')
-D = 20
-N = 10000
-np.random.seed(10)
-pointA = np.random.rand(1, D)
-print(pointA)
-documents = np.random.rand(N, D)
-print('s')
-sw_graph = create_sw_graph(documents)
-print('qq')
-a = nsw(pointA, documents, sw_graph, search_k=10)
-for i in a:
-    #print(documents[i])
-    print(distance(pointA, documents[i]))
-print(documents[a[0]])
+#print('1')
+#D = 20
+#N = 10000
+#np.random.seed(10)
+#pointA = np.random.rand(1, D)
+#print(pointA)
+#documents = np.random.rand(N, D)
+#print('s')
+#sw_graph = create_sw_graph(documents)
+#print('qq')
+#a = nsw(pointA, documents, sw_graph, search_k=10)
+#for i in a:
+#    #print(documents[i])
+#    print(distance(pointA, documents[i]))
+#print(documents[a[0]])
