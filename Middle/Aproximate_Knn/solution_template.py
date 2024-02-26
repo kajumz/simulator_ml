@@ -49,7 +49,7 @@ def create_sw_graph(
 
     return graph
 
-def nsw(query_point: int, all_documents: np.ndarray, 
+def nsw(query_point: int, all_documents: np.ndarray,
         graph_edges: Dict[int, List[int]],
         search_k: int = 10, num_start_points: int = 5,
         dist_f: Callable = distance) -> List[int]:
@@ -85,20 +85,32 @@ def nsw(query_point: int, all_documents: np.ndarray,
     priority_queue = OrderedDict()
 
     # Select initial points to start the search
-    start_points = np.random.choice(all_documents, size=num_start_points, replace=False)
+    start_points = np.random.choice(len(all_documents), size=num_start_points, replace=False)
     for start_point in start_points:
-        priority = dist_f(query_point, start_point)
-        insert_into_ordered_dict(priority_queue, start_point, start_point, priority)
+        priority = dist_f(query_point, all_documents[start_point])
+        insert_into_ordered_dict(priority_queue, start_point, all_documents[start_point], priority)
 
     while len(search_results) < search_k and priority_queue:
         current_point = next(iter(priority_queue))
         del priority_queue[current_point]
         visited.add(current_point)
-        search_results[current_point] = dist_f(query_point, current_point)
+        search_results[current_point] = dist_f(query_point, all_documents[current_point])
         search_neighbors(current_point, visited, priority_queue)
 
-    return np.array(list(search_results.items()))[:search_k, 0]
+    return np.array(list(search_results.items()), dtype=object)[:search_k, 0]
 
-
-
-
+print('1')
+D = 20
+N = 10000
+np.random.seed(10)
+pointA = np.random.rand(1, D)
+print(pointA)
+documents = np.random.rand(N, D)
+print('s')
+sw_graph = create_sw_graph(documents)
+print('qq')
+a = nsw(pointA, documents, sw_graph, search_k=10)
+for i in a:
+    #print(documents[i])
+    print(distance(pointA, documents[i]))
+print(documents[a[0]])
