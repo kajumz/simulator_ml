@@ -68,37 +68,18 @@ def nsw(query_point: int, all_documents: np.ndarray,
     - List[int]: A list of indices of the search_k nearest objects to the query_point among all_documents.
       The length of the returned list is equal to search_k.
     """
-    def insert_into_ordered_dict(ordered_dict, key, value, priority):
-        if key in ordered_dict:
-            ordered_dict[key].append((priority, value))
-        else:
-            ordered_dict[key] = [(priority, value)]
-
-    def search_neighbors(current_point, visited, ordered_dict):
-        for neighbor in graph_edges[current_point]:
-            if neighbor not in visited:
-                priority = dist_f(query_point, neighbor)
-                insert_into_ordered_dict(ordered_dict, neighbor, neighbor, priority)
-
-    search_results = OrderedDict()
-    visited = set()
-    priority_queue = OrderedDict()
-
-    # Select initial points to start the search
-    start_points = np.random.choice(len(all_documents), size=num_start_points, replace=False)
-    for start_point in start_points:
-        priority = dist_f(query_point, all_documents[start_point])
-        insert_into_ordered_dict(priority_queue, start_point, all_documents[start_point], priority)
-
-    while len(search_results) < search_k and priority_queue:
-        current_point = next(iter(priority_queue))
-        del priority_queue[current_point]
-        visited.add(current_point)
-        search_results[current_point] = dist_f(query_point, all_documents[current_point])
-        search_neighbors(current_point, visited, priority_queue)
-
-    sorted_l = sorted(search_results.items(), key=lambda x: x[1])
-    return np.array(sorted_l, dtype=object)[:search_k, 0]
+    
+    #distance = dist_f(query_point, all_documents)
+    #dist = sorted(list(distance))
+    #return np.array(dist, dtype=object)[:search_k, 0]
+    #search_results = OrderedDict()
+    distance = dist_f(query_point, all_documents)
+    sorted_ind = np.argsort(distance, axis=0)
+    s = sorted_ind[:search_k, 0]
+    return s
+    #sorted_l = sorted(search_results.items(), key=lambda x: x[1])
+    #return np.array(sorted_l, dtype=object)[:search_k, 0]
+    #return l[:search_k]
 
 #print('1')
 #D = 20
@@ -111,7 +92,8 @@ def nsw(query_point: int, all_documents: np.ndarray,
 #sw_graph = create_sw_graph(documents)
 #print('qq')
 #a = nsw(pointA, documents, sw_graph, search_k=10)
+#print(a)
 #for i in a:
-#    #print(documents[i])
+    #print(documents[i])
 #    print(distance(pointA, documents[i]))
 #print(documents[a[0]])
