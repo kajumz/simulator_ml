@@ -42,11 +42,11 @@ SELECT
     sub.y_lag_5,
     sub.y_lag_6,
     (sub.y_lag_1 + sub.y_lag_2 + sub.y_lag_3) / 3 as y_avg_3,
-    greatest(sub.y_lag_1, (greatest(sub.y_lag_2, sub.y_lag_3))) OVER (PARTITION BY sub.product_name ORDER BY sub.monday ROWS BETWEEN 2 PRECEDING AND 2 PRECEDING) AS y_max_3,
-    MIN(sub.y_lag_1 + sub.y_lag_2 + sub.y_lag_3) OVER (PARTITION BY sub.product_name ORDER BY sub.monday ROWS BETWEEN 2 PRECEDING AND 2 PRECEDING) AS y_min_3,
+    greatest(sub.y_lag_1, greatest(sub.y_lag_2, sub.y_lag_3))  AS y_max_3,
+    least(sub.y_lag_1, least(sub.y_lag_2,sub.y_lag_3)) AS y_min_3,
     (sub.y_lag_1 + sub.y_lag_2 + sub.y_lag_3 + sub.y_lag_4 + sub.y_lag_5 + sub.y_lag_6) / 6  as y_avg_6,
-    MAX(sub.y_lag_1 + sub.y_lag_2 + sub.y_lag_3 + sub.y_lag_4 + sub.y_lag_5 + sub.y_lag_6) OVER (PARTITION BY sub.product_name ORDER BY sub.monday ROWS BETWEEN 5 PRECEDING AND 5 PRECEDING) AS y_max_6,
-    MIN(sub.y_lag_1 + sub.y_lag_2 + sub.y_lag_3 + sub.y_lag_4 + sub.y_lag_5 + sub.y_lag_6) OVER (PARTITION BY sub.product_name ORDER BY sub.monday ROWS BETWEEN 5 PRECEDING AND 5 PRECEDING) AS y_min_6,
+    greatest(sub.y_lag_1, greatest(sub.y_lag_2, greatest(sub.y_lag_3, greatest(sub.y_lag_4, greatest(sub.y_lag_5, sub.y_lag_6))))) AS y_max_6,
+    least(sub.y_lag_1, least(sub.y_lag_2, least(sub.y_lag_3, least(sub.y_lag_4, least(sub.y_lag_5, sub.y_lag_6))))) AS y_min_6,
     aggregated.y_all_lag_1,
     aggregated.y_all_lag_2,
     aggregated.y_all_lag_3,
@@ -54,11 +54,10 @@ SELECT
     aggregated.y_all_lag_5,
     aggregated.y_all_lag_6,
     (aggregated.y_all_lag_1 + aggregated.y_all_lag_2 + aggregated.y_all_lag_3) / 3 as y_all_avg_3,
-    MAX(aggregated.y_all_lag_1 + aggregated.y_all_lag_2 + aggregated.y_all_lag_3) OVER (PARTITION BY sub.product_name ORDER BY sub.monday ROWS BETWEEN 2 PRECEDING AND 2 PRECEDING) AS y_all_max_3,
-    MIN(aggregated.y_all_lag_1 + aggregated.y_all_lag_2 + aggregated.y_all_lag_3) OVER (PARTITION BY sub.product_name ORDER BY sub.monday ROWS BETWEEN 2 PRECEDING AND 2 PRECEDING) AS y_all_min_3,
+    greatest(aggregated.y_all_lag_1, greatest(aggregated.y_all_lag_2, aggregated.y_all_lag_3)) AS y_all_max_3,
+    least(aggregated.y_all_lag_1, least(aggregated.y_all_lag_2,aggregated.y_all_lag_3)) AS y_all_min_3,
     (aggregated.y_all_lag_1 + aggregated.y_all_lag_2 + aggregated.y_all_lag_3 + aggregated.y_all_lag_4 + aggregated.y_all_lag_5 + aggregated.y_all_lag_6) / 6 as y_all_avg_6,
-    MAX(aggregated.y_all_lag_1 + aggregated.y_all_lag_2 + aggregated.y_all_lag_3 + aggregated.y_all_lag_4 + aggregated.y_all_lag_5 + aggregated.y_all_lag_6) OVER (PARTITION BY sub.product_name ORDER BY sub.monday ROWS BETWEEN 2 PRECEDING AND 2 PRECEDING) AS y_all_max_6,
-    MIN(aggregated.y_all_lag_1 + aggregated.y_all_lag_2 + aggregated.y_all_lag_3 + aggregated.y_all_lag_4 + aggregated.y_all_lag_5 + aggregated.y_all_lag_6) OVER (PARTITION BY sub.product_name ORDER BY sub.monday ROWS BETWEEN 2 PRECEDING AND 2 PRECEDING) AS y_all_min_6
-    
+    greatest(aggregated.y_all_lag_1, greatest(aggregated.y_all_lag_2, greatest(aggregated.y_all_lag_3, greatest(aggregated.y_all_lag_4, greatest(aggregated.y_all_lag_5, aggregated.y_all_lag_6))))) AS y_all_max_6,
+    least(aggregated.y_all_lag_1, least(aggregated.y_all_lag_2, least(aggregated.y_all_lag_3, least(aggregated.y_all_lag_4, least(aggregated.y_all_lag_5, aggregated.y_all_lag_6))))) AS y_all_min_6
 FROM sub 
 JOIN aggregated ON sub.monday = aggregated.monday
