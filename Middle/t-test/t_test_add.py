@@ -92,7 +92,7 @@ class SequentialForwardSelector:
                 #    continue
 
                 _, p_value = ttest_rel(scores_b, scores_a, alternative='greater')
-                if p_value < (self.alpha / len(excluded_feats)):
+                if p_value < self.alpha:
                     iter_results.append((feat, scores_b))
 
             if not iter_results:
